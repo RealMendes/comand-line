@@ -1,0 +1,32 @@
+name: Delete branch after merge
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  delete_merged_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get the merged branch name
+        run: |
+          BRANCH_NAME=$(echo ${{ github.event.ref }} | sed 's|refs/heads/||')
+          echo "Merged branch: $BRANCH_NAME"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Delete merged branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            git branch -r | grep "origin/${BRANCH_NAME}" && \
+            git push origin --delete "${BRANCH_NAME}" || \
+            echo "Branch ${BRANCH_NAME} does not exist on remote."
+          else
+            echo "This is a new branch, nothing to delete."
+          fi
