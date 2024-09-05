@@ -29,11 +29,12 @@ jobs:
       run: |
         pr_url=$(gh pr list --base staging --head master --json url -q '.[].url')
         if [ -n "$pr_url" ]; then
-          # Faz o merge automático do PR
-          gh pr merge "$pr_url" --auto --delete-branch
+          # Faz o merge automático do PR com a flag --merge
+          gh pr merge "$pr_url" --merge --delete-branch
         else
           echo "Nenhum PR encontrado para merge."
         fi
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
