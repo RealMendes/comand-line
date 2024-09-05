@@ -33,6 +33,12 @@ func Gerar() *cli.App {
 			Flags:  flags,
 			Action: buscarServidores,
 		},
+		{
+			Name:    "sair",
+			Aliases: []string{"x"},
+			Usage:   "Sair da aplicação",
+			Action:  sair,
+		},
 	}
 	return app
 }
@@ -57,4 +63,8 @@ func buscarServidores(c *cli.Context) {
 	for _, servidor := range servidores {
 		fmt.Println(servidor)
 	}
+}
+
+func sair(c *cli.Context) error {
+	return cli.NewExitError("Saindo da aplicação", 0)
 }
