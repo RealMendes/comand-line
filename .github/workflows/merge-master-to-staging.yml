@@ -1,27 +1,40 @@
-name: Merge Master to Staging
+name: Merge Master To Staging
 
 on:
   push:
     branches:
-      - master  # Define que será disparado no push para a branch prod
+      - master  # Dispara o workflow quando houver um push na branch master
 
 jobs:
-  merge:
+  create-pr:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      with:
-        ref: master  # Verifica o código da branch prod
 
-    - name: Configure git
+    - name: Create a Pull Request
+      id: create_pr
       run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
+        # Verifica se já há um PR aberto da master para staging
+        pr_url=$(gh pr list --base staging --head master --json url -q '.[].url')
+        if [ -z "$pr_url" ]; then
+          # Cria um novo PR da master para staging
+          gh pr create --head master --base staging --title "Merge master into staging" --body "Automatically created PR to sync master with staging."
+        else
+          echo "PR já existe: $pr_url"
+        fi
 
-    - name: Merge prod into stg
+    - name: Merge the Pull Request
       run: |
-        git checkout staging
-        git merge master
-        git push origin staging  # Faz o push da stg após o merge
+        pr_url=$(gh pr list --base staging --head master --json url -q '.[].url')
+        if [ -n "$pr_url" ]; then
+          # Faz o merge automático do PR com a flag --merge
+          gh pr merge "$pr_url" --merge --delete-branch
+        else
+          echo "Nenhum PR encontrado para merge."
+        fi
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
