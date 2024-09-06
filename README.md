@@ -10,6 +10,7 @@ Esta aplicação de linha de comando permite buscar IPs e Nomes de Servidor na W
 4. Compile o projeto: `go build`
 5. Teste
 6. Teste ainda mais.
+7. Será que funciona?
 
 ## Uso
 
