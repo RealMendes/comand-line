@@ -10,10 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Backup Staging Branch
+        run: |
+          git checkout staging
+          git branch staging-backup
+          git push origin staging-backup
       - name: Delete Staging Branch
         run: |
           git push origin :staging
       - name: Create New Staging Branch
         run: |
-          git checkout -b teste origin/master
-          git push origin teste
+          git checkout -b staging origin/master
+          git push origin staging
