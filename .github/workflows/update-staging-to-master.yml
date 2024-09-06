@@ -10,11 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Fetch Branches
-        run: git fetch origin
-      - name: Checkout Staging Branch
-        run: git checkout origin/staging
-      - name: Pull Main Branch
-        run: git pull origin master --rebase
-      - name: Push to Staging Branch
-        run: git push origin staging --force
+      - name: Delete Staging Branch
+        run: |
+          git push origin :staging
+      - name: Create New Staging Branch
+        run: |
+          git checkout -b staging origin/master
+          git push origin staging
