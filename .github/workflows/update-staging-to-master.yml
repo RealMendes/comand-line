@@ -15,5 +15,5 @@ jobs:
           git push origin :staging
       - name: Create New Staging Branch
         run: |
-          git checkout -b staging origin/master
-          git push origin staging
+          git checkout -b teste origin/master
+          git push origin teste
