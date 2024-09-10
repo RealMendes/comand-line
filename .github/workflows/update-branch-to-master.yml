@@ -1,0 +1,18 @@
+name: Update Branch to Master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update Staging Branch
+        run: |
+          git fetch origin
+          git checkout origin/staging
+          git rebase origin/master
+          git push origin staging
